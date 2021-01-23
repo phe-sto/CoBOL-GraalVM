@@ -49,7 +49,7 @@ A great medium_ post from an Oracle collaborator detail the GraalVM llvm-toolcha
 Compiling CoBOL C intermediate and execution
 --------------------------------------------
 
-Let use the Mandelbrot set implemented in CoBOL in our example, see ``mandelbrot.cob``::
+Let use the Mandelbrot set implemented in CoBOL in our example, see ``mandelbrotset.cbl``::
 
           identification division.
           program-id. MandelbrotSet.
@@ -133,15 +133,15 @@ Producing the C intermediate
 
 Using GnuCOBOL, the C intermediate can be produced with the following command::
 
-   cobc -C -x mandelbrot.cob
+   cobc -C -x mandelbrotset.cbl
 
 The project should look like::
 
    .
-   ├── mandelbrot.c
-   ├── mandelbrot.c.h
-   ├── mandelbrot.c.l.h
-   └── mandelbrot.cob
+   ├── mandelbrotset.c
+   ├── mandelbrotset.c.h
+   ├── mandelbrotset.c.l.h
+   └── mandelbrotset.cbl
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Compiling C to LLVM bytcode
@@ -163,10 +163,10 @@ The project should look like::
    .
    ├── bin
    │   └── mandelbrot-graal.bc
-   ├── mandelbrot.c
-   ├── mandelbrot.c.h
-   ├── mandelbrot.c.l.h
-   └── mandelbrot.cob
+   ├── mandelbrotset.c
+   ├── mandelbrotset.c.h
+   ├── mandelbrotset.c.l.h
+   └── mandelbrotset.cbl
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
