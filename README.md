@@ -57,7 +57,7 @@ package call
 [llvmttoolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
 On my system I already have `clang` and `lli` so I created symlinks
 `gu-clang` and `gu-lli`. I prefer to create a symlink with a different
-name for `clang` and `lli` executables rather that extending the path
+name for `clang` and `lli` executables rather than extending the path
 which will required the use of `update-alternatives`. A great
 [medium](https://medium.com/graalvm/graalvm-llvm-toolchain-f606f995bf)
 post from an Oracle collaborator detail the GraalVM llvm-toolchain.
