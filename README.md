@@ -151,7 +151,7 @@ command:
 
 The project should look like:
 
-    .
+    benchmark
     ├── mandelbrotset.c
     ├── mandelbrotset.c.h
     ├── mandelbrotset.c.l.h
@@ -173,7 +173,7 @@ Compiling to IR command is:
 
 The project should look like:
 
-    .
+    benchmark
     ├── bin
     │   ├── mandelbrotset.ll
     │   └── mandelbrotset
