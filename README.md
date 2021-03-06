@@ -1,5 +1,5 @@
-Compile and execute CoBOL with GraalVM and GnuCOBOL
-===================================================
+Compile and execute CoBOL with GraalVM Community Edition and GnuCOBOL
+=====================================================================
 
 GraalVM the polyglot Virtual Machine by Oracle
 ----------------------------------------------
