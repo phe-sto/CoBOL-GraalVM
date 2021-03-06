@@ -23,8 +23,7 @@ environment are not encouraging vocations. Another major issue with
 those technologies resides in the costs of mainframe licenses. I think,
 hope, both could be solved developing CoBOL in modern environments. In
 case you don't know, rewriting the code and just shutting down the
-mainframes is not an option, see this great
-[article](https://thenewstack.io/cobol-everywhere-will-maintain/).
+mainframes is not an option, see this great [article](https://thenewstack.io/cobol-everywhere-will-maintain/).
 
 ### GnuCOBOL
 
@@ -160,9 +159,9 @@ The project should look like:
 
 #### Compiling C to LLVM Intermediate Reprensentation
 
-One point not completely clear from their documentation is the benefit of LLVM and how execute code in GraalVM not just creating a binary like GNU CoBOL easily do.
+One point not completely clear from their documentation is the benefit of LLVM and how execute code in GraalVM not just creating a binary like GNU CoBOL easily does.
 Using Clang to directly compile CoBOL into a executable is possible if you don't forget to include the ``libcob`` dependency with ``-lcob``.
-Compiling to IR command is:
+Compiling to a binary command is:
 
     gu-clang mandelbrotset.c -o bin/mandelbrotset -lcob
 
@@ -170,7 +169,7 @@ But the real benefit of LLVM comes from the Intermediate Reprensentation (IR) co
 
 Compiling to IR command is:
 
-    gu-clang mandelbrotset.c -S -o "bin/mandelbrotset.ll" -emit-llvm
+    gu-clang mandelbrotset.c -S -emit-llvm -o "bin/mandelbrotset.ll"
 
 The project should look like:
 
@@ -185,9 +184,9 @@ The project should look like:
 
 #### Execution in the LLVM interpreter
 
-The LLVM interpreter `lli` command can run the IR code if the libcob is loaded:
+The LLVM interpreter `lli` command can run the IR loading the ``libcob`` dependency:
 
-    gu-lli -load /usr/local/lib/libcob.so ./bin/mandelbrot-graal.ll
+    gu-lli -load /usr/local/lib/libcob.so ./bin/mandelbrotset.ll
 
 Christophe Brun, <https://www.papit.fr/>
 
