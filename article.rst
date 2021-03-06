@@ -42,7 +42,7 @@ Native code in GraalVM
 ----------------------
 
 If not already installed, GraalVM installation_ is described on their website. Executing native code require a GraalVM package call llvm-toolchain_.
-On my system I already have ``clang`` and ``lli`` so I created symlinks ``clang-gu`` and ``lli-gu``. I prefer to create a symlink with a different name for ``clang`` and ``lli`` executables rather that extending the path which will required the use of ``update-alternatives``.
+On my system I already have ``clang`` and ``lli`` so I created symlinks ``clang-gu`` and ``gu-lli``. I prefer to create a symlink with a different name for ``clang`` and ``lli`` executables rather that extending the path which will required the use of ``update-alternatives``.
 A great medium_ post from an Oracle collaborator detail the GraalVM llvm-toolchain.
 
 --------------------------------------------
@@ -143,26 +143,19 @@ The project should look like::
    ├── mandelbrotset.c.l.h
    └── mandelbrotset.cbl
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Compiling C to LLVM bytcode
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Compiling C to LLVM Intermediate Reprensentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-One point not completely clear from their documentation, is the difference with the regular Clang.
-
-.. WARNING::
-
-   On contrary to regular Clang, Graal one compile directly to LLVM bytecode without ``-emit-llvm``. Do not mix regular LLVM toolchain with GraalVM toolchain in general.
-
-Don't forget to include the ``libcob`` dependency with ``-lcob``, our compiling command is::
-
-   clang-gu mandelbrot.c -o bin/mandelbrot-graal.bc -lcob
+Using Clang to directly compile CoBOL into a executable is possible if you don't forget to include the ``libcob`` dependency with ``-lcob``.
+But the real benefit of LLVM comes from the Intermediate Reprensentation (IR) code that can execute or compile on any platform running LLVM or in this GraalVM LLVM.
 
 
 The project should look like::
 
    .
    ├── bin
-   │   └── mandelbrot-graal.bc
+   │   └── mandelbrot.ll
    ├── mandelbrotset.c
    ├── mandelbrotset.c.h
    ├── mandelbrotset.c.l.h
@@ -175,7 +168,7 @@ Execution in the LLVM interpreter
 
 The LLVM interpreter ``lli`` command::
 
-   lli-gu ./bin/mandelbrot-graal.bc
+   gu-lli ./bin/mandelbrot.ll
                                                                                                                                                                
 Christophe Brun, https://www.papit.fr/
 
