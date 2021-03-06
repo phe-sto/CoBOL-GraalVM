@@ -188,7 +188,7 @@ The LLVM interpreter `lli` command can run the IR loading the ``libcob`` depende
 
     gu-lli -load /usr/local/lib/libcob.so ./bin/mandelbrotset.ll
 
-Christophe Brun, <https://www.papit.fr/>
+[Christophe Brun](mailto:christophe.brun@papit.fr), <https://www.papit.fr/>
 
 [^1]: <https://www.graalvm.org/docs/why-graal/>
 
