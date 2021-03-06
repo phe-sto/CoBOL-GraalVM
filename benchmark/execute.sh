@@ -1,17 +1,13 @@
 #!/bin/bash
 execute_cobol_program(){
     EXECUTABLE=$1
-    echo "GCC *****************************************************************"
-    bash -c "time ./bin/$EXECUTABLE-gcc | grep m.*s"
-    echo "CLANG ***************************************************************"
-    bash -c "time ./bin/$EXECUTABLE-llvm | grep m.*s"
-    echo "COBC ****************************************************************"
-    bash -c "time ./bin/$EXECUTABLE-cobc | grep m.*s"
-    echo "GRAAL LLVM **********************************************************"
-    bash -c "time lli-gu ./bin/$EXECUTABLE-graal.bc | grep m.*s"
+    echo "LLVM ***************************************************************"
+    bash -c "time lli -load /usr/local/lib/libcob.so ./bin/$EXECUTABLE.ll | grep m.*s"
+    echo "GRAAL LLVM *********************************************************"
+    bash -c "time gu-lli -load /usr/local/lib/libcob.so ./bin/$EXECUTABLE.ll | grep m.*s"
 }
-for PROGRAM in "mandelbrotset" "recursivefactorial" "sieveoferathostenes" "fibonacci15"
+for PROGRAM in "mandelbrotset" "factorial" "sieveoferathostenes" "fibonacci"
 do
-    echo "$PROGRAM ************************************************************"
+    printf "\n%s>\n" $PROGRAM
 	execute_cobol_program $PROGRAM;
 done
