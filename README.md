@@ -16,7 +16,7 @@ CoBOL modernization
 -------------------
 
 This article's goal is to explain how the GraalVM could be running CoBOL
-on pretty much any platform. IT departments, mainly in financial
+on pretty much any platform i.e. **whithout package manager, only with the GraalVM Clang compiler**. IT departments, mainly in financial
 institutions and governments are desperately seeking CoBOL and mainframe
 experts but the lack of training course and the repelling Z/OS TSO
 environment are not encouraging vocations. Another major issue with
@@ -33,28 +33,39 @@ It can directly compile CoBOL using your platform toolchain but it is
 not our goal here, as we want to execute it with GraalVM. There are many
 CoBOL compilers out there. This one implement major part of CoBOL 1985,
 2002 and several extensions of other compilers. This compiler and it's
-dependency libcob can easily be installed using synaptic package manager
-command `apt-get install open-cobol`. Open CoBOL is the former name of
-GnuCOBOL, it can be checked that way:
+dependency libcob can easily be compiled with formarly installed GraalVM Compiler.
+The lastest relaese of the code can be found on their official [SourceForge site](https://sourceforge.net/p/gnucobol/code/HEAD/tree/trunk/).
+Auto configure the build normal:
 
-    chrichri@chrichri-debian:~$ cobc -version
-    cobc (GnuCOBOL) 2.2.0
-    Copyright (C) 2017 Free Software Foundation, Inc.
-    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+    sh ./autogen.sh
+
+> **Configure the built with the GraalVM Clang compiler** (and no Berkeley DB support in our example):
+
+    ./configure --with-cc=gu-clang --without-db
+
+Build and install as usual:
+
+    make install
+
+My installation give me the following GNU CoBOL version:
+
+    chrichri@chrichri-x470aorusultragaming:~/cobinatcci/gnucobol-code-r4210-tags-gnucobol-3.1.2$ cobc --version
+    cobc (GnuCOBOL) 3.1.2.0
+    Copyright (C) 2020 Free Software Foundation, Inc.
+    License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
     This is free software; see the source for copying conditions.  There is NO
     warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     Written by Keisuke Nishida, Roger While, Ron Norman, Simon Sobisch, Edward Hart
-    Built     Jul 17 2018 20:29:40
-    Packaged  Sep 06 2017 18:48:43 UTC
-    C version "7.3.0"
+    Built     Mar 07 2021 21:44:51
+    Packaged  Mar 07 2021 20:31:04 UTC
+    C version "9.3.0"
 
 ### Native code in GraalVM
 
-If not already installed, GraalVM
-[installation](https://www.graalvm.org/docs/getting-started/) is
+If not already installed, GraalVM [installation](https://www.graalvm.org/docs/getting-started/) is
 described on their website. Executing native code require a GraalVM
 package call
-[llvmttoolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
+[llvmt-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
 On my system I already have `clang` and `lli` so I created symlinks
 `gu-clang` and `gu-lli`. I prefer to create a symlink with a different
 name for `clang` and `lli` executables rather than extending the path
@@ -142,7 +153,7 @@ Let use the Mandelbrot set implemented in CoBOL in our example, see
     stop run.
     end program MandelbrotSet.
 
-#### Producing the C intermediate
+### Producing the C intermediate
 
 Using GnuCOBOL, the C intermediate can be produced with the following
 command:
@@ -157,14 +168,10 @@ The project should look like:
     ├── mandelbrotset.c.l.h
     └── mandelbrotset.cbl
 
-#### Compiling C to LLVM Intermediate Reprensentation
+### Compiling C to LLVM Intermediate Reprensentation
 
 One point not completely clear from their documentation is the benefit of LLVM and how execute code in GraalVM not just creating a binary like GNU CoBOL easily does.
 Using Clang to directly compile CoBOL into a executable is possible if you don't forget to include the ``libcob`` dependency with ``-lcob``.
-Compiling to a binary command is:
-
-    gu-clang mandelbrotset.c -o bin/mandelbrotset -lcob
-
 But the real benefit of LLVM comes from the Intermediate Reprensentation (IR) code that can execute or compile on any platform running LLVM or in this case GraalVM LLVM.
 
 Compiling to IR command is:
@@ -182,7 +189,7 @@ The project should look like:
     ├── mandelbrotset.c.l.h
     └── mandelbrotset.cbl
 
-#### Execution in the LLVM interpreter
+### Execution in the LLVM interpreter
 
 The LLVM interpreter `lli` command can run the IR loading the ``libcob`` dependency:
 
