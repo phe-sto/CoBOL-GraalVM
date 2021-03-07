@@ -16,7 +16,7 @@ CoBOL modernization
 -------------------
 
 This article's goal is to explain how the GraalVM could be running CoBOL
-on pretty much any platform i.e. **whithout package manager, only with the GraalVM Clang compiler**. IT departments, mainly in financial
+on pretty much any platform **whithout package manager, only with the GraalVM Clang compiler**. IT departments, mainly in financial
 institutions and governments are desperately seeking CoBOL and mainframe
 experts but the lack of training course and the repelling Z/OS TSO
 environment are not encouraging vocations. Another major issue with
