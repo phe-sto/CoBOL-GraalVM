@@ -25,6 +25,19 @@ hope, both could be solved developing CoBOL in modern environments. In
 case you don't know, rewriting the code and just shutting down the
 mainframes is not an option, see this great [article](https://thenewstack.io/cobol-everywhere-will-maintain/).
 
+### Native code in GraalVM
+
+If not already installed, GraalVM [installation](https://www.graalvm.org/docs/getting-started/) is
+described on their website. Executing native code require a GraalVM
+package call
+[llvmt-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
+On my system I already have `clang` and `lli` so I created symlinks
+`gu-clang` and `gu-lli`. I prefer to create a symlink with a different
+name for `clang` and `lli` executables rather than extending the path
+which will required the use of `update-alternatives`. A great
+[medium](https://medium.com/graalvm/graalvm-llvm-toolchain-f606f995bf)
+post from an Oracle collaborator detail the GraalVM llvm-toolchain.
+
 ### GnuCOBOL
 
 Using Flex and Bison for lexical parsing,
@@ -59,19 +72,6 @@ My installation give me the following GNU CoBOL version:
     Built     Mar 07 2021 21:44:51
     Packaged  Mar 07 2021 20:31:04 UTC
     C version "9.3.0"
-
-### Native code in GraalVM
-
-If not already installed, GraalVM [installation](https://www.graalvm.org/docs/getting-started/) is
-described on their website. Executing native code require a GraalVM
-package call
-[llvmt-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
-On my system I already have `clang` and `lli` so I created symlinks
-`gu-clang` and `gu-lli`. I prefer to create a symlink with a different
-name for `clang` and `lli` executables rather than extending the path
-which will required the use of `update-alternatives`. A great
-[medium](https://medium.com/graalvm/graalvm-llvm-toolchain-f606f995bf)
-post from an Oracle collaborator detail the GraalVM llvm-toolchain.
 
 ### Compiling CoBOL C intermediate and execution
 
