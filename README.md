@@ -31,12 +31,20 @@ If not already installed, GraalVM [installation](https://www.graalvm.org/docs/ge
 described on their website. Executing native code require a GraalVM
 package call
 [llvmt-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
-On my system I already have `clang` and `lli` so I created symlinks
-`gu-clang` and `gu-lli`. I prefer to create a symlink with a different
-name for `clang` and `lli` executables rather than extending the path
-which will required the use of `update-alternatives`. A great
+On my system I already have *clang* and *lli* so I created symlinks
+*gu-clang* and *gu-lli*. I prefer to create a symlink with a different
+name for *clang* and *lli* executables rather than extending the path
+which will required the use of *update-alternatives*. A great
 [medium](https://medium.com/graalvm/graalvm-llvm-toolchain-f606f995bf)
 post from an Oracle collaborator detail the GraalVM llvm-toolchain.
+The installation gives the following LLVM version:
+
+    chrichri@chrichri-x470aorusultragaming:~/cobinatcci$ gu-lli --version
+    LLVM (http://llvm.org/):
+      LLVM version 10.0.0-4-g22d2637565-bg83994d0b4b
+      Optimized build.
+      Default target: x86_64-unknown-linux-gnu
+      Host CPU: znver1
 
 ### GnuCOBOL
 
@@ -60,7 +68,7 @@ Build and install as usual:
 
     make install
 
-My installation give me the following GNU CoBOL version:
+The installation gives me the following GNU CoBOL version:
 
     chrichri@chrichri-x470aorusultragaming:~/cobinatcci/gnucobol-code-r4210-tags-gnucobol-3.1.2$ cobc --version
     cobc (GnuCOBOL) 3.1.2.0
@@ -75,8 +83,7 @@ My installation give me the following GNU CoBOL version:
 
 ### Compiling CoBOL C intermediate and execution
 
-Let use the Mandelbrot set implemented in CoBOL in our example, see
-`mandelbrotset.cbl`:
+Let's use the Mandelbrot set implemented in CoBOL as an example, see *mandelbrotset.cbl*:
 
     identification division.
     program-id. MandelbrotSet.
@@ -171,7 +178,7 @@ The project should look like:
 ### Compiling C to LLVM Intermediate Reprensentation
 
 One point not completely clear from their documentation is the benefit of LLVM and how execute code in GraalVM not just creating a binary like GNU CoBOL easily does.
-Using Clang to directly compile CoBOL into a executable is possible if you don't forget to include the ``libcob`` dependency with ``-lcob``.
+Using Clang to directly compile CoBOL into a executable is possible if you don't forget to include the *libcob* dependency with *-lcob*.
 But the real benefit of LLVM comes from the Intermediate Reprensentation (IR) code that can execute or compile on any platform running LLVM or in this case GraalVM LLVM.
 
 Compiling to IR command is:
@@ -191,7 +198,7 @@ The project should look like:
 
 ### Execution in the LLVM interpreter
 
-The LLVM interpreter `lli` command can run the IR loading the ``libcob`` dependency:
+The LLVM interpreter *lli* command can run the IR loading the *libcob* dependency:
 
     gu-lli -load /usr/local/lib/libcob.so ./bin/mandelbrotset.ll
 
