@@ -5,23 +5,21 @@ GraalVM the polyglot Virtual Machine by Oracle
 ----------------------------------------------
 
 The GraalVM supports various languages, Java, JavaScript, Ruby, Python,
-R, WebAssembly, C/C++[^1]. In another document[^2] Oracle explains the
+R, WebAssembly, C/C++[^1]. In another document, Oracle explains the
 VM can be an interpreter from native codes using compiler called a
-Low-Level Virtual Machine (LLVM). Those native code being C, C++,
+Low-Level Virtual Machine (LLVM)[^2]. Those native codes being C, C++,
 FORTRAN, Rust, COBOL, and Go. It is now getting even more exiting! As a
-former mainframe/CoBOL developer, I would like to see those billion
+former mainframe/CoBOL developer, I would like to see those billions
 lines of CoBOL modernized in a more open environments.
 
 CoBOL modernization
 -------------------
 
 This article's goal is to explain how the GraalVM could be running CoBOL
-on pretty much any platform **whithout package manager, only with the GraalVM Clang compiler**. IT departments, mainly in financial
-institutions and governments are desperately seeking CoBOL and mainframe
-experts but the lack of training course and the repelling Z/OS TSO
-environment are not encouraging vocations. Another major issue with
+on pretty much any platform **without package manager, only with the GraalVM and it's LLVM package**.
+IT departments, mainly in financial institutions and governments are desperately seeking CoBOL and mainframe experts but the lack of training course and the repelling Z/OS TSO environment are not encouraging vocations. Another major issue with
 those technologies resides in the costs of mainframe licenses. I think,
-hope, both could be solved developing CoBOL in modern environments. In
+hope, both could be solved developing and running CoBOL in modern environments. In
 case you don't know, rewriting the code and just shutting down the
 mainframes is not an option, see this great [article](https://thenewstack.io/cobol-everywhere-will-maintain/).
 
@@ -29,8 +27,7 @@ mainframes is not an option, see this great [article](https://thenewstack.io/cob
 
 If not already installed, GraalVM [installation](https://www.graalvm.org/docs/getting-started/) is
 described on their website. Executing native code require a GraalVM
-package call
-[llvmt-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
+package call [llvmt-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
 On my system I already have *clang* and *lli* so I created symlinks
 *gu-clang* and *gu-lli*. I prefer to create a symlink with a different
 name for *clang* and *lli* executables rather than extending the path
@@ -48,15 +45,14 @@ The installation gives the following LLVM version:
 
 ### GnuCOBOL
 
-Using Flex and Bison for lexical parsing,
-[GnuCOBOL](https://open-cobol.sourceforge.io/) can transpile CoBOL to C.
-It can directly compile CoBOL using your platform toolchain but it is
+Using Flex and Bison for lexical parsing, [GnuCOBOL](https://open-cobol.sourceforge.io/) can transpile CoBOL to C.
+It can directly compile CoBOL to an executable using your platform toolchain but it is
 not our goal here, as we want to execute it with GraalVM. There are many
 CoBOL compilers out there. This one implement major part of CoBOL 1985,
-2002 and several extensions of other compilers. This compiler and it's
-dependency libcob can easily be compiled with formarly installed GraalVM Compiler.
-The lastest relaese of the code can be found on their official [SourceForge site](https://sourceforge.net/p/gnucobol/code/HEAD/tree/trunk/).
-Auto configure the build normal:
+2002 and several extensions of other compilers[^3]. This compiler and it's
+library libcob can easily be compiled with formerly installed GraalVM Compiler.
+The latest release of the code can be found on their official [SourceForge site](https://sourceforge.net/p/gnucobol/code/HEAD/tree/trunk/).
+Auto configure the build with the provided shell script:
 
     sh ./autogen.sh
 
@@ -170,6 +166,7 @@ command:
 The project should look like:
 
     benchmark
+    ├── bin
     ├── mandelbrotset.c
     ├── mandelbrotset.c.h
     ├── mandelbrotset.c.l.h
@@ -177,9 +174,9 @@ The project should look like:
 
 ### Compiling C to LLVM Intermediate Reprensentation
 
-One point not completely clear from their documentation is the benefit of LLVM and how execute code in GraalVM not just creating a binary like GNU CoBOL easily does.
+One point not completely clear from their documentation is the benefit of LLVM and how to execute code in GraalVM not just creating a binary like GNU CoBOL easily does.
 Using Clang to directly compile CoBOL into a executable is possible if you don't forget to include the *libcob* dependency with *-lcob*.
-But the real benefit of LLVM comes from the Intermediate Reprensentation (IR) code that can execute or compile on any platform running LLVM or in this case GraalVM LLVM.
+But the real benefit of LLVM comes from the Intermediate Representation (IR) code that can run or compile on any platform running LLVM or in this case GraalVM LLVM.
 
 Compiling to IR command is:
 
@@ -189,8 +186,7 @@ The project should look like:
 
     benchmark
     ├── bin
-    │   ├── mandelbrotset.ll
-    │   └── mandelbrotset
+    │   └── mandelbrotset.ll
     ├── mandelbrotset.c
     ├── mandelbrotset.c.h
     ├── mandelbrotset.c.l.h
@@ -202,8 +198,47 @@ The LLVM interpreter *lli* command can run the IR loading the *libcob* dependenc
 
     gu-lli -load /usr/local/lib/libcob.so ./bin/mandelbrotset.ll
 
+### Comparason with the regular LLVM
+
+The same version of LLVM can be downloaded from their github repository, under the *llvmorg-10.0.0* tag.
+It was compiled using [Ninja](https://ninja-build.org/), with the assertions disabled, as a release to get the same build as the GraalVm one. The compiling command is therefore:
+
+    mkdir build
+    cmake -GNinja ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=off
+    ninja
+
+This give a similar LLVM interpreter as the GraalVM one:
+
+    chrichri@chrichri-x470aorusultragaming:~/cobinatcci$ lli --version
+    LLVM (http://llvm.org/):
+      LLVM version 10.0.0
+      Optimized build.
+      Default target: x86_64-unknown-linux-gnu
+      Host CPU: znver1
+    
+The previously generated IR code can be run with this LLVM interpreter:
+
+    lli -load /usr/local/lib/libcob.so ./bin/mandelbrotset.ll
+
+Execution time with both LLVM interpreter is similar:
+
+    mandelbrotset>
+    LLVM ***************************************************************
+
+    real    0m0.356s
+    user    0m0.352s
+    sys     0m0.007s
+    GRAAL LLVM *********************************************************
+
+    real    0m0.371s
+    user    0m0.335s
+    sys     0m0.014s
+
+Other programs indicated the GraalVM LLVM interpreter is always slightly slower. 1.39 slower in the worst case found with a program computing the first 1899 prime numbers. See the corresponding [github repository](https://github.com/phe-sto/CoBOL-GraalVM) for more details on this benchmark. 
 [Christophe Brun](mailto:christophe.brun@papit.fr), <https://www.papit.fr/>
 
 [^1]: <https://www.graalvm.org/docs/why-graal/>
 
 [^2]: <https://www.graalvm.org/uploads/graalvm-language-level-virtualization-oracle-tech-papers.pdf>
+
+[^3]: <https://sourceforge.net/projects/gnucobol/>
