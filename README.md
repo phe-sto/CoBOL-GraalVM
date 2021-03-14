@@ -29,14 +29,14 @@ If not already installed, GraalVM [installation](https://www.graalvm.org/docs/ge
 described on their website. Executing native code require a GraalVM
 package call [llvmt-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
 On my system I already have *clang* and *lli* so I created symlinks
-*gu-clang* and *gu-lli*. I prefer to create a symlink with a different
+*g-clang* and *g-lli*. I prefer to create a symlink with a different
 name for *clang* and *lli* executables rather than extending the path
 which will required the use of *update-alternatives*. A great
 [medium](https://medium.com/graalvm/graalvm-llvm-toolchain-f606f995bf)
 post from an Oracle collaborator detail the GraalVM llvm-toolchain.
 The installation gives the following LLVM version:
 
-    chrichri@chrichri-x470aorusultragaming:~/cobinatcci$ gu-lli --version
+    chrichri@chrichri-x470aorusultragaming:~/cobinatcci$ g-lli --version
     LLVM (http://llvm.org/):
       LLVM version 10.0.0-4-g22d2637565-bg83994d0b4b
       Optimized build.
@@ -58,7 +58,7 @@ Auto configure the build with the provided shell script:
 
 > **Configure the built with the GraalVM Clang compiler** (and no Berkeley DB support in our example):
 
-    ./configure --with-cc=gu-clang --without-db
+    ./configure --with-cc=g-clang --without-db
 
 Build and install as usual:
 
@@ -180,7 +180,7 @@ But the real benefit of LLVM comes from the Intermediate Representation (IR) cod
 
 Compiling to IR command is:
 
-    gu-clang mandelbrotset.c -S -emit-llvm -o "bin/mandelbrotset.ll"
+    g-clang mandelbrotset.c -S -emit-llvm -o "bin/mandelbrotset.ll"
 
 The project should look like:
 
@@ -196,7 +196,7 @@ The project should look like:
 
 The LLVM interpreter *lli* command can run the IR loading the *libcob* dependency:
 
-    gu-lli -load /usr/local/lib/libcob.so ./bin/mandelbrotset.ll
+    g-lli -load /usr/local/lib/libcob.so ./bin/mandelbrotset.ll
 
 ### Comparason with the regular LLVM
 
