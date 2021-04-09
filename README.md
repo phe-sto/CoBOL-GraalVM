@@ -16,10 +16,10 @@ CoBOL modernization
 -------------------
 
 This article's goal is to explain how the GraalVM could be running CoBOL
-on pretty much any platform **without package manager, only with the GraalVM and it's LLVM package**.
+on pretty much any platform **without package manager, only with the GraalVM and its LLVM package**.
 IT departments, mainly in financial institutions and governments are desperately seeking CoBOL and mainframe experts but the lack of training course and the repelling Z/OS TSO environment are not encouraging vocations. Another major issue with
 those technologies resides in the costs of mainframe licenses. I think,
-hope, both could be solved developing and running CoBOL in modern environments. In
+hope, both could be solved porting existing CoBOL in modern environments. In
 case you don't know, rewriting the code and just shutting down the
 mainframes is not an option, see this great [article](https://thenewstack.io/cobol-everywhere-will-maintain/).
 
@@ -27,7 +27,7 @@ mainframes is not an option, see this great [article](https://thenewstack.io/cob
 
 If not already installed, GraalVM [installation](https://www.graalvm.org/docs/getting-started/) is
 described on their website. Executing native code require a GraalVM
-package call [llvmt-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
+package call [llvm-toolchain](https://www.graalvm.org/docs/reference-manual/languages/llvm/#llvm-toolchain).
 On my system I already have *clang* and *lli* so I created symlinks
 *g-clang* and *g-lli*. I prefer to create a symlink with a different
 name for *clang* and *lli* executables rather than extending the path
@@ -45,11 +45,11 @@ The installation gives the following LLVM version:
 
 ### GnuCOBOL
 
-Using Flex and Bison for lexical parsing, [GnuCOBOL](https://open-cobol.sourceforge.io/) can transpile CoBOL to C.
+Using Flex for lexical parsing and Bison a compiler-compiler, [GnuCOBOL](https://open-cobol.sourceforge.io/) can transpile CoBOL to C.
 It can directly compile CoBOL to an executable using your platform toolchain but it is
 not our goal here, as we want to execute it with GraalVM. There are many
 CoBOL compilers out there. This one implement major part of CoBOL 1985,
-2002 and several extensions of other compilers[^3]. This compiler and it's
+2002 and several extensions of other compilers[^3]. This compiler and its
 library libcob can easily be compiled with formerly installed GraalVM Compiler.
 The latest release of the code can be found on their official [SourceForge site](https://sourceforge.net/p/gnucobol/code/HEAD/tree/trunk/).
 Auto configure the build with the provided shell script:
@@ -77,7 +77,7 @@ The installation gives me the following GNU CoBOL version:
     Packaged  Mar 07 2021 20:31:04 UTC
     C version "9.3.0"
 
-### Compiling CoBOL C intermediate and execution
+### Compiling CoBOL C intermediate, LLVM intermediate representation and it's execution
 
 Let's use the Mandelbrot set implemented in CoBOL as an example, see *mandelbrotset.cbl*:
 
@@ -156,7 +156,7 @@ Let's use the Mandelbrot set implemented in CoBOL as an example, see *mandelbrot
     stop run.
     end program MandelbrotSet.
 
-### Producing the C intermediate
+#### Producing the C intermediate
 
 Using GnuCOBOL, the C intermediate can be produced with the following
 command:
@@ -172,7 +172,7 @@ The project should look like:
     ├── mandelbrotset.c.l.h
     └── mandelbrotset.cbl
 
-### Compiling C to LLVM Intermediate Reprensentation
+#### Compiling C to LLVM Intermediate Reprensentation
 
 One point not completely clear from their documentation is the benefit of LLVM and how to execute code in GraalVM not just creating a binary like GNU CoBOL easily does.
 Using Clang to directly compile CoBOL into a executable is possible if you don't forget to include the *libcob* dependency with *-lcob*.
@@ -192,13 +192,13 @@ The project should look like:
     ├── mandelbrotset.c.l.h
     └── mandelbrotset.cbl
 
-### Execution in the LLVM interpreter
+#### Execution in the LLVM interpreter
 
 The LLVM interpreter *lli* command can run the IR loading the *libcob* dependency:
 
     g-lli -load /usr/local/lib/libcob.so ./bin/mandelbrotset.ll
 
-### Comparason with the regular LLVM
+### comparison with the regular LLVM
 
 The same version of LLVM can be downloaded from their github repository, under the *llvmorg-10.0.0* tag.
 It was compiled using [Ninja](https://ninja-build.org/), with the assertions disabled, as a release to get the same build as the GraalVm one. The compiling command is therefore:
