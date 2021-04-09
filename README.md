@@ -77,7 +77,7 @@ The installation gives me the following GNU CoBOL version:
     Packaged  Mar 07 2021 20:31:04 UTC
     C version "9.3.0"
 
-### Compiling CoBOL C intermediate, LLVM intermediate representation and it's execution
+### Compiling CoBOL C intermediate, LLVM intermediate representation and its execution
 
 Let's use the Mandelbrot set implemented in CoBOL as an example, see *mandelbrotset.cbl*:
 
